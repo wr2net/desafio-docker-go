@@ -1,0 +1,12 @@
+FROM golang:alpine as build
+
+RUN mkdir /app
+COPY main /app
+WORKDIR /app
+
+FROM scratch
+
+COPY --from=build /app/main /
+WORKDIR /
+
+ENTRYPOINT [ "./main" ]
