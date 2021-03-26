@@ -1,10 +1,8 @@
-FROM golang:1.15
-
-WORKDIR /go/src/
+FROM golang:alpine as builder
+WORKDIR /go/src/app
 COPY . .
+RUN CGO_ENABLED=0 go build -o /app main.go
 
-RUN go get -d -v ./...
-RUN go install -v ./...
-RUN GOOS=linux go build
-
-ENTRYPOINT [ "./main" ]
+FROM scratch
+COPY --from=builder /app /app
+ENTRYPOINT ["/app"]
